@@ -1,9 +1,9 @@
 public abstract class Beverage {
-    String name;
-    double purachsePrice;
-    String classification;
-    double volume;
-    int amount;
+    private String name;
+    private double purachsePrice;
+    private String classification;
+    private double volume;
+    private int amount;
 
     public Beverage(String name, double purachsePrice, String classification, double volume, int amount) {
         this.name = name;
