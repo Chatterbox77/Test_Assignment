@@ -4,4 +4,7 @@ public class AlcoholBeverage extends Beverage{
         super(name, purachsePrice, classification, volume, amount);
         this.strength=strength;
     }
+    public String toString(){
+        return "AlcoholBeverage "+super.toString()+" strength= "+strength;
+    }
 }

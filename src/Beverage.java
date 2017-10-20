@@ -32,4 +32,14 @@ public abstract class Beverage {
     public int getAmount() {
         return amount;
     }
+
+    @Override
+    public String toString() {
+        return
+                "name='" + name + '\'' +
+                ", purachsePrice=" + purachsePrice +
+                ", classification='" + classification + '\'' +
+                ", volume=" + volume +
+                ", amount=" + amount;
+    }
 }
