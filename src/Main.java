@@ -1,6 +1,4 @@
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -14,11 +12,11 @@ public class Main {
 
             for(int hour=8;hour<21;hour++){
 
-                for(int buyer=0;buyer<r.nextInt(10);buyer++ ){
+                for(int buyer=0;buyer<r.nextInt(11);buyer++ ){
 
                     ArrayList<Beverage> bought=new ArrayList<>();
 
-                    for(int item=0;item<r.nextInt(11)-1;item++){
+                    for(int item=0;item<r.nextInt(11);item++){
 
                         int type=r.nextInt(2);
                         Beverage b=null;
