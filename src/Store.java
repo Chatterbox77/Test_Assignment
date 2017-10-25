@@ -13,7 +13,7 @@ public class Store {
     private double spentMoney;
     private double earnedMoney;
     private String path;
-
+// Constructor for the class Store
     public Store(String path){
             alcohol=new ArrayList<>();
             alcoholFree=new ArrayList<>();
@@ -25,16 +25,25 @@ public class Store {
     }
 
 
+    //increment the spentMoney variable by inc
     public void addSpentMoney(double inc){spentMoney+=inc;}
-    public double spentMoney(){
-        return spentMoney;
-    }
+
+    //  increment the earned variable by inc
     public void addEarnedMoney(double inc){earnedMoney+=inc;}
-    public double getEarnedMoney(){return earnedMoney;}
+
+    // get the beverage on index position index from the alcohol list
     public Beverage getAlcoholBeverage(int index){return alcohol.get(index);}
+
+    // get the beverage on index position index from the alcoholFree list
     public Beverage getAlcoholFreeBeverage(int index){return alcoholFree.get(index);}
+
+    // get the number of beverags in the alcohol list
     public int numberOfAlcoholBeverages(){return alcohol.size();}
+
+    // get the number of beverags in the alcoholFree list
     public int numberOfAlcoholFreeBeverages(){return alcoholFree.size();}
+
+    //    get the composition of the beverage if it is alcohol free else return empty array
     private String[] composition(String[] in){
 
         try{
@@ -49,6 +58,8 @@ public class Store {
         return new String[]{};
 
     }
+
+    // dump the results of the emulation to the csv file
     private void dumpToCSV(){
 
 
@@ -72,6 +83,8 @@ public class Store {
 
 
     }
+
+//    initialize Store by reading and parsing csv file
     private void init(String path){
         Scanner in=null;
         try {
@@ -100,6 +113,8 @@ public class Store {
 
         }
     }
+
+    //    buy missing items
     public void buyItems(){
         for(int i=0;i<alcohol.size();i++){
             if(alcohol.get(i).getAmount()<10){
@@ -116,6 +131,7 @@ public class Store {
             }
         }
     }
+//    finish emulation and dump results to the csv
     public void finishEmulation(){
         try{
             File out=Paths.get(new File(path).getParentFile().toString(),"results.txt").toFile();
@@ -138,6 +154,9 @@ public class Store {
         }
         dumpToCSV();
     }
+
+    //    override to String
+
     public String toString(){
         return alcohol.toString()+"\n"+alcoholFree.toString();
     }

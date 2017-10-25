@@ -1,6 +1,6 @@
 
 import java.util.ArrayList;
-
+//define Enum Day
 public enum Day {
     Monday,
     Tuseday,
@@ -10,6 +10,7 @@ public enum Day {
     Saturday,
     Sunday;
 
+//    static function that returns the ArrayList that contains 30 days
     static public ArrayList<Day>month(){
         int i=0;
         ArrayList<Day> month=new ArrayList<>();
