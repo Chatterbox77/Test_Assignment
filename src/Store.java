@@ -1,9 +1,10 @@
 import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Formatter;
 import java.util.Scanner;
 
 public class Store {
@@ -11,26 +12,19 @@ public class Store {
     private ArrayList<AlcoholFreeBeverage> alcoholFree;
     private double spentMoney;
     private double earnedMoney;
+    private String path;
 
-    public Store(){
+    public Store(String path){
             alcohol=new ArrayList<>();
             alcoholFree=new ArrayList<>();
-//        init("/Users/macBookpro/desktop/r.csv");
-            i();
+            init(path);
+            this.path=path;
             spentMoney=0.;
             earnedMoney=0.;
 
     }
-    private double initSpentMoney(){
-        double d=0.;
-        for(int i=0;i<alcohol.size();i++){
-            d+=alcohol.get(i).getAmount()*alcohol.get(i).getPurachsePrice();
-        }
-        for(int i=0;i<alcoholFree.size();i++){
-            d+=alcoholFree.get(i).getAmount()*alcoholFree.get(i).getPurachsePrice();
-        }
-        return d;
-    }
+
+
     public void addSpentMoney(double inc){spentMoney+=inc;}
     public double spentMoney(){
         return spentMoney;
@@ -41,55 +35,108 @@ public class Store {
     public Beverage getAlcoholFreeBeverage(int index){return alcoholFree.get(index);}
     public int numberOfAlcoholBeverages(){return alcohol.size();}
     public int numberOfAlcoholFreeBeverages(){return alcoholFree.size();}
-    private void init(String path){
+    private String[] composition(String[] in){
 
+        try{
+            String s=in[4].trim();
+            Double.parseDouble(s.substring(0,s.length()-1));
+        }catch (Exception e){
+            String[] dest=new String[in.length-1-4];
+            System.arraycopy(in,4, dest,0,in.length-1-4);
+            return dest;
+
+        }
+        return new String[]{};
+
+    }
+    private void dumpToCSV(){
+
+
+        try{
+            FileWriter stream =new FileWriter(new File(path), false);
+
+            for(AlcoholBeverage b:alcohol){
+
+                stream.write(b.toString()+"\n");
+            }
+            for(AlcoholFreeBeverage b:alcoholFree){
+
+                stream.write(b.toString()+"\n");
+            }
+            stream.close();
+        }catch(IOException e){
+            System.out.println("Error. File identified by path: "+path+" doesn't exist.");
+            System.exit(1);
+        }
+
+
+
+    }
+    private void init(String path){
+        Scanner in=null;
+        try {
+            in = new Scanner(new File(path));
+        }catch (FileNotFoundException e){
+            System.out.println("Error. File identified by path: "+path+" doesn't exist.");
+            System.exit(1);
+        }
+        while(in.hasNext()){
+
+            String[] s=in.nextLine().split(",");
+            String[] composition=composition(s);
+            if(composition.length==0){
+                String s1=s[4].trim();
+                alcohol.add(new AlcoholBeverage(
+                   s[0],Double.parseDouble(s[1].trim()),s[2],Double.parseDouble(s[3].trim()),
+                        Integer.parseInt(s[5].trim()),Double.parseDouble(s1.substring(0,s1.length()-1))
+                ));
+            }else{
+                alcoholFree.add(new AlcoholFreeBeverage(
+                        s[0],Double.parseDouble(s[1].trim()),s[2],Double.parseDouble(s[3].trim()),
+                        Integer.parseInt(s[s.length-1].trim()),composition
+                ));
+            }
+
+
+        }
     }
     public void buyItems(){
         for(int i=0;i<alcohol.size();i++){
             if(alcohol.get(i).getAmount()<10){
                 alcohol.get(i).setAmount(alcohol.get(i).getAmount()+150);
-//                spentMoney+=alcohol.get(i).getPurachsePrice()*150;
+                alcohol.get(i).incrementBought(150);
+
             }
         }
         for(int i=0;i<alcoholFree.size();i++){
             if(alcoholFree.get(i).getAmount()<10){
                 alcoholFree.get(i).setAmount(alcoholFree.get(i).getAmount()+150);
-//                spentMoney+=alcoholFree.get(i).getPurachsePrice()*150;
+                alcoholFree.get(i).incrementBought(150);
+
             }
         }
     }
-    void i(){
-        alcohol.add(
-                new AlcoholBeverage("Пиво Одесское Новое", 13.25, "пиво", 0.5, 120, 4.3)
-        );
-        alcohol.add(
-                new AlcoholBeverage("Красная испанка", 80.00, "вино", 0.75, 92, 14)
-        );
-        alcohol.add(
-                new AlcoholBeverage("Мартини Биссе", 205.00, "ликеры",1.0, 12, 13)
-        );
-        alcohol.add(
-                new AlcoholBeverage("Два моря", 195.00, "вино", 0.75, 0,12)
-        );
-        alcoholFree.add(
-          new AlcoholFreeBeverage("Вода минеральная Хорошо", 9.99, "минеральные воды", 0.3,  570,"вода минеральная, лечебно-столовая")
+    public void finishEmulation(){
+        try{
+            File out=Paths.get(new File(path).getParentFile().toString(),"results.txt").toFile();
+            out.createNewFile();
+            FileWriter stream =new FileWriter(out, false);
+            for(Beverage b:alcohol){
+                stream.write(b.getName()+" Sold: "+b.getSold()+" Bought: "+b.getBought()+"\n");
+            }
+            for(Beverage b:alcoholFree){
+                stream.write(b.getName()+" Sold: "+b.getSold()+" Bought: "+b.getBought()+"\n");
+            }
 
-        );
-        alcoholFree.add(
-                new AlcoholFreeBeverage("Вода минеральная Хорошо", 15.47, "минеральные воды", 1.5, 412,"вода минеральная, лечебно-столовая")
+            stream.write(new Formatter().format("Earned Money: %.2f",(earnedMoney-spentMoney)).toString()+"\n");
+            stream.write(new Formatter().format("Spent Money: %.2f",spentMoney).toString());
+            stream.close();
 
-        );
-        alcoholFree.add(
-                new AlcoholFreeBeverage("Сок Богач Грейпфрутовый", 22.00, "соки", 0.95, 156,"вода, сок грейпфрутовый концентрированный, фруктоза, лимонная кислота")
-
-        );
-        alcoholFree.add(
-                new AlcoholFreeBeverage("Енерджи бум Плюс", 24.15, "прочие напитки", 0.33, 78,"вода, лимонная кислота, ароматизатор Яблоко, Е-345, Е-120, Е-630, Е-632, краситель Вишня")
-
-
-                );
-
-
+        }catch(IOException e){
+            System.out.println("Error. Cannot create file identified by path: "+path);
+            System.exit(1);
+        }
+        dumpToCSV();
     }
     public String toString(){
         return alcohol.toString()+"\n"+alcoholFree.toString();
