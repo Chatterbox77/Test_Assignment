@@ -7,6 +7,7 @@ public class AlcoholFreeBeverage extends Beverage{
         this.composition=composition;
     }
     public String toString(){
-        return "AlcoholFreeBeverage "+super.toString()+" composition= "+ Arrays.toString(composition);
+        return getName()+", "+getPurachsePrice()+", "+getClassification()+", "+getVolume()+", "
+                +String.join(",",composition)+", "+getAmount();
     }
 }
